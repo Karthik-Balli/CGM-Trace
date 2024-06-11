@@ -1,0 +1,499 @@
+<?php
+    session_start();
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glucose Analysis</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-image: url("https://img.freepik.com/free-photo/hand-holding-blood-glucose-meter-measuring-blood-sugar-background-is-stethoscope-chart-file_1387-931.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Glucose Analysis</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="info.html">Info</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+  <?php include 'user.php' ?>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center mt-5">
+
+            <div class="col-md-6">
+                <h1 class="display-2 text-center text-primary">Trends Metrics</h1>
+
+            </div>
+        </div>
+        <h2 class="muted text-center text-secondary">Interday Glucose Trends</h2>
+        <div id="chartContainer"></div>
+        <h2 id="morningTrends">Morning Trends</h2>
+        <canvas id="chartCanvasM"></canvas>
+        <h2 id="afternoonTrends">Afternoon Trends</h2>
+        <canvas id="chartCanvasAn"></canvas>
+        <h2 id="nightTrends">Night Trends</h2>
+        <canvas id="chartCanvasN"></canvas>
+
+        <h2 class="muted text-center text-secondary" id="overall">Overall Glucose Trend </h2>
+        <div id="chartContainer"></div>
+        <canvas id="chartCanvasOA"></canvas>
+
+
+        <h2 class="muted text-center text-secondary" id="iqr">Blood Glucose Interquartile Range</h2>
+        <div id="chartContainer"></div>
+        <canvas id="chartCanvasIQR"></canvas>
+
+        <h2 class="muted text-center text-secondary" id="hypo">Hypoglycemic Events (HO)</h2>
+        <div id="chartContainer"></div>
+        <p id="hypo" class="text-center"></p>
+        <canvas id="myChart"></canvas>
+
+
+        <h2 class="muted text-center text-secondary" id="hyper">Hyperglycemic Events (HR)</h2>
+        <div id="chartContainer"></div>
+        <p id="hype" class="text-center"></p>
+        <canvas id="myChartHR"></canvas>
+
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+
+
+    <script>
+        // Make a GET request to the API endpoint
+        fetch('http://127.0.0.1:5000/morning_trends')
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const labels = data.labels;
+                const values = data.values;
+
+                // Create a chart using Chart.js
+                const ctx = document.getElementById('chartCanvasM').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Morning Trends',
+                            data: values,
+                            borderColor: 'orange',
+                            backgroundColor: 'transparent',
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Morning Trends'
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Glucose Value'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+
+    </script>
+
+    <script>
+        // Make a GET request to the API endpoint
+        fetch('http://127.0.0.1:5000/afternoon_trends')
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const labels = data.labels;
+                const values = data.values;
+
+                // Create a chart using Chart.js
+                const ctx = document.getElementById('chartCanvasAn').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Afternooon Trends',
+                            data: values,
+                            borderColor: 'yellowgreen',
+                            backgroundColor: 'transparent',
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Aafternoon Trends'
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Glucose Value'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+
+    </script>
+
+    <script>
+        // Make a GET request to the API endpoint
+        fetch('http://127.0.0.1:5000/night_trends')
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const labels = data.labels;
+                const values = data.values;
+
+                // Create a chart using Chart.js
+                const ctx = document.getElementById('chartCanvasN').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Night Trends',
+                            data: values,
+                            borderColor: 'blue',
+                            backgroundColor: 'transparent',
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Night Trends'
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Glucose Value'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+
+    </script>
+
+    <script>
+        // Event listener for the Generate Chart button
+
+        // Make a GET request to the appropriate API endpoint based on the selected category
+        const url = `http://127.0.0.1:5000/glucose_trend`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const labels = data.labels;
+                const glucoseValues = data.glucose_values;
+                const aggregateValues = data.aggregate_values;
+
+                // Create a chart using Chart.js
+                const ctx = document.getElementById('chartCanvasOA').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Aggregate Value",
+                            data: aggregateValues,
+                            borderColor: 'green',
+                            backgroundColor: 'transparent',
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: "Aggregate Value"
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Aggregate Value'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    </script>
+
+
+    <script>
+
+        fetch("http://127.0.0.1:5000/iqr")
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const iqrdata = data.iqrdata;
+                console.log(iqrdata);
+                // Sort the glucose values in ascending order
+                const sortedValues = iqrdata.sort((a, b) => a - b);
+
+                // Calculate the first quartile (Q1)
+                const q1Index = Math.floor(sortedValues.length * 0.25);
+                const q1 = sortedValues[q1Index];
+
+                // Calculate the third quartile (Q3)
+                const q3Index = Math.floor(sortedValues.length * 0.75);
+                const q3 = sortedValues[q3Index];
+
+                // Calculate the interquartile range (IQR)
+                const iqr = q3 - q1;
+
+                // Calculate the minimum and maximum values
+                const min = sortedValues[0];
+                const max = sortedValues[sortedValues.length - 1];
+
+                // Create the chart data
+                const chartData = [
+                    { x: min, y: 0 },
+                    { x: q1, y: 0 },
+                    { x: q1, y: 1 },
+                    { x: q3, y: 1 },
+                    { x: q3, y: 0 },
+                    { x: max, y: 0 }
+                ];
+
+                // Create the chart
+                const ctx = document.getElementById('chartCanvasIQR').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        datasets: [{
+                            label:`Interquartile Range (IQR) 179`,
+                            data: chartData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        indexAxis: 'y',
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Glucose Value'
+                                }
+                            },
+                            y: {
+                                ticks: [],
+                                max: 1,
+                                min: 0
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Interquartile Range (IQR) Chart'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const dataset = context.dataset.data[context.dataIndex];
+                                        const glucoseValue = dataset.x;
+                                        const yCoordinate = dataset.y;
+                                        return `Glucose Value: ${glucoseValue}, Y Coordinate: ${yCoordinate}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+            }).catch((error) => {
+                console.log(error);
+            })
+
+    </script>
+
+
+<script>
+    // Fetch data from the API endpoint
+    fetch('http://127.0.0.1:5000/hypoloycemic_trends')
+      .then(response => response.json())
+      .then(data => {
+        // Retrieve the necessary arrays from the data
+        const glucoseArray = data.glucose;
+        const timeArray = data.time;
+        var dataCondition = ""
+        dataCondition = data.msg;
+        var hypoTxt = document.getElementById('hypo');
+        hypoTxt.textContent = dataCondition;
+        
+
+        // Create the chart
+const ctx = document.getElementById('myChart').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: timeArray,
+    datasets: [{
+      label: 'Glucose',
+      data: glucoseArray,
+      borderColor: 'rgb(75, 192, 192)',
+      fill: false
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Glucose Level'
+        }
+      }
+    }
+  }
+});
+});
+</script>
+
+<script>
+    // Fetch data from the API endpoint
+    fetch('http://127.0.0.1:5000/hyperglycemic_trends')
+      .then(response => response.json())
+      .then(data => {
+        // Retrieve the necessary arrays from the data
+        const glucoseArray = data.glucose;
+        const timeArray = data.time;
+        var hypeTxt = ""
+        const msgdata = data.msg;
+        hypeTxt = document.getElementById('hype');
+        hypeTxt.textContent = msgdata;
+        
+
+        // Create the chart
+const ctx = document.getElementById('myChartHR').getContext('2d');
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: timeArray,
+    datasets: [{
+      label: 'Glucose',
+      data: glucoseArray,
+      borderColor: 'rgb(75, 192, 192)',
+      fill: false
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Glucose Level'
+        }
+      }
+    }
+  }
+});
+});
+</script>
+
+
+</body>
+
+</html>

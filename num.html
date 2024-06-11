@@ -1,0 +1,278 @@
+<?php
+  session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glucose Analysis</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-image: url("https://img.freepik.com/free-photo/hand-holding-blood-glucose-meter-measuring-blood-sugar-background-is-stethoscope-chart-file_1387-931.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">Glucose Analysis</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="info.html">Info</a>
+        </li>
+        <li class="nav-item">
+          <a class='nav-link' href="dashboard.html">Findings</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <?php include 'user.php' ?>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center mt-5">
+        
+      <div class="col-md-6">
+        <h2 class="muted text-center text-secondary">Numarical Metrics</h2>
+
+        <table class="table caption-top">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Numarical Metric</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td id="1name"></td>
+                <td id="1value"></td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td id="2name"></td>
+                <td id="2value"></td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td id="10name"></td>
+                <td id="10value"></td>
+              </tr>
+              <tr>
+              <tr>
+                <th scope="row">4</th>
+                <td id="3name"></td>
+                <td id="3value"></td>
+              </tr>
+              <tr>
+                <th scope="row">5</th>
+                <td id="4name"></td>
+                <td id="4value"></td>
+              </tr>
+              <tr>
+                <th scope="row">6</th>
+                <td id="5name"></td>
+                <td id="5value"></td>
+              </tr>
+              <tr>
+                <th scope="row">7</th>
+                <td id="6name"></td>
+                <td id="6value"></td>
+              </tr>
+              <tr>
+                <th scope="row">8</th>
+                <td id="7name"></td>
+                <td id="7value"></td>
+              </tr>
+              <tr>
+                <th scope="row">9</th>
+                <td id="8name"></td>
+                <td id="8value"></td>
+              </tr>
+              <tr>
+                <th scope="row">10</th>
+                <td id="9name"></td>
+                <td id="9value"></td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-8">
+        <div id="chartContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom JavaScript -->
+  <script>
+
+function meanData() {
+          fetch("http://127.0.0.1:5000/mean")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.mean);
+              var resultName = document.getElementById("1name");
+              var resultValue = document.getElementById("1value");
+              resultName.textContent = "MEAN";
+              resultValue.textContent = data.mean
+
+            })
+
+        }
+        meanData()
+
+        function sdData() {
+          fetch("http://127.0.0.1:5000/sd")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.sd);
+              var resultName = document.getElementById("2name");
+              var resultValue = document.getElementById("2value");
+              resultName.textContent = "Standard Deviation";
+              resultValue.textContent = data.sd;
+            })
+
+        }
+        sdData()
+
+
+        function sdrData() {
+          fetch("http://127.0.0.1:5000/sdr")
+          .then(response => response.json())
+          .then(data => {
+            console.log("SDR: "+data.dataSDR);
+            var resultName = document.getElementById("10name");
+            var resultValue = document.getElementById("10value");
+            resultName.textContent = "Rate of Standard Deviation";
+            resultValue.textContent = data.dataSDR;
+          })
+        }
+        sdrData()
+
+
+        function gvData() {
+          fetch("http://127.0.0.1:5000/gv")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.gv);
+              var resultName = document.getElementById("3name");
+              var resultValue = document.getElementById("3value");
+              resultName.textContent = "Glycemic Variability";
+              resultValue.textContent = data.gv;
+            })
+
+        }
+        gvData()
+
+        function tirData() {
+          fetch("http://127.0.0.1:5000/tir_tar_tbr")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+            //   var resultDiv = document.getElementById("result");
+              var resultName = document.getElementById("4name");
+              var resultValue = document.getElementById("4value");
+              resultName.textContent = "TAR";
+              resultValue.textContent = data.tar_percentage;
+
+              var resultName = document.getElementById("5name");
+              var resultValue = document.getElementById("5value");
+              resultName.textContent = "TBR";
+              resultValue.textContent = data.tbr_percentage;
+
+              var resultName = document.getElementById("6name");
+              var resultValue = document.getElementById("6value");
+              resultName.textContent = "TIR";
+              resultValue.textContent = data.tir_percentage;
+
+
+              console.log("TAR and TBR");
+              console.log("tar1:"+data.tar1_percentage);
+              console.log("tar2:"+data.tar2_percentage);
+              console.log("tbr1:"+data.tbr1_percentage);
+              console.log("tbr2:"+data.tbr2_percentage);
+
+
+
+              //resultDiv.innerHTML = `TAR : ${data.tar_percentage} % <br> TBR : ${data.tbr_percentage} % <br> TIR: ${data.tir_percentage} %`;
+              // resultDiv.textContent = `TAR : ${data.tar_percentage} % \n\n TBR : ${data.tbr_percentage} % \n\n TIR: ${data.tir_percentage} %`;
+            })
+
+        }
+        tirData()
+
+        function moddData() {
+          fetch("http://127.0.0.1:5000/modd")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              var resultName = document.getElementById("7name");
+              var resultValue = document.getElementById("7value");
+              resultName.textContent = "MODD";
+              resultValue.textContent = data.modd;
+            })
+
+        }
+        moddData()
+
+        function congaData() {
+          fetch("http://127.0.0.1:5000/conga")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              var resultName = document.getElementById("8name");
+              var resultValue = document.getElementById("8value");
+              resultName.textContent = "CONGA";
+              resultValue.textContent = data.conga;
+            })
+
+        }
+        congaData()
+
+
+        function mageData() {
+          fetch("http://127.0.0.1:5000/mage")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data, "HIIImega");
+              var resultName = document.getElementById("9name");
+              var resultValue = document.getElementById("9value");
+              resultName.textContent = "MAGE";
+              resultValue.textContent = data.mage;
+            })
+
+        }
+        mageData()
+
+</script>
+
+</body>
+
+</html>

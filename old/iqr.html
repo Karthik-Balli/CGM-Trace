@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Glucose Interquartile Range</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@1.2.0"></script>
+    
+
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Blood Glucose Interquartile Range</h2>
+        <canvas id="chartCanvas"></canvas>
+    </div>
+
+    <script>
+        // Make a GET request to the appropriate API endpoint for IQR calculation
+        const url = 'http://127.0.0.1:5000/iqr'
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Create the chart using Chart.js and the boxplot plugin
+                console.log(data)
+                const ctx = document.getElementById('chartCanvas').getContext('2d');
+                new Chart(ctx, {
+                    type: 'boxplot',
+                    data: data,
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Interquartile Range (IQR) Chart'
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add CSS styling for responsiveness */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        @media screen and (max-width: 600px) {
+            /* Adjust table layout for smaller screens */
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Metrics</h1>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Definition</th>
+        </tr>
+        <tr>
+            <td>Mean</td>
+            <td>The average of a set of numbers, calculated by summing all the values and dividing by the total count.</td>
+        </tr>
+        <tr>
+            <td>Standard Deviation (SD)</td>
+            <td>A measure of the amount of variation or dispersion in a set of numbers, calculated as the square root of the variance.</td>
+        </tr>
+        <tr>
+            <td>Standard Deviation of Blood Glucose Rate of Change (SDR)</td>
+            <td>The standard deviation of the rate of change of blood glucose values over a specific time period. It provides an indication of the variability in blood glucose fluctuations.</td>
+        </tr>
+        <tr>
+            <td>Interquartile Range (IQR)</td>
+            <td>The range between the first quartile (Q1) and the third quartile (Q3) in a sorted set of numbers, representing the middle 50% of the data. It is a measure of the spread of the data that is less sensitive to outliers than the range.</td>
+        </tr>
+        <tr>
+            <td>Glycemic Variability (GV)</td>
+            <td>A measure of the degree of fluctuation in blood glucose levels over a specific time period. It can be assessed using various metrics such as standard deviation, coefficient of variation, or mean absolute glucose change.</td>
+        </tr>
+        <tr>
+            <td>Time in Range (TAR), Time in Target Range (TIR), Time Below Range (TBR)</td>
+            <td>These metrics are used to evaluate the percentage of time spent within different blood glucose ranges. TAR refers to the percentage of time spent within a specific target range, TIR indicates the percentage of time spent above the lower limit of the target range, and TBR represents the percentage of time spent below the target range.</td>
+        </tr>
+        <tr>
+            <td>Mean of Daily Differences (MODD)</td>
+            <td>A metric that quantifies the average magnitude of glucose fluctuations within a day by calculating the absolute differences between consecutive glucose values and then taking the mean of these differences.</td>
+        </tr>
+        <tr>
+            <td>Continuous Glucose Monitoring Analysis (CONGA)</td>
+            <td>A method to assess glucose variability by analyzing the differences between glucose values at different time intervals, such as CONGA-1 (1-hour interval), CONGA-2 (2-hour interval), etc.</td>
+        </tr>
+        <tr>
+            <td>Mean Absolute Glucose Excursions (MAGE)</td>
+            <td>A metric that calculates the average of the largest upward and downward glucose excursions from the mean blood glucose value. It quantifies the magnitude of glucose fluctuations.</td>
+        </tr>
+        <tr>
+            <td>Hyperglycemic Events</td>
+            <td>Episodes or periods of high blood glucose levels above a specified threshold. The definition of hyperglycemic events can vary depending on the specific threshold used.</td>
+        </tr>
+        <tr>
+            <td>Hypoglycemic Events</td>
+            <td>Episodes or periods of low blood glucose levels below a specified threshold. The definition of hypoglycemic events can vary depending on the specific threshold used.</td>
+        </tr>
+        <tr>
+            <td>Interday Glucose Trends</td>
+            <td>Patterns or trends observed in blood glucose levels over multiple days. This analysis can reveal insights into daily variations and long-term glucose control.</td>
+        </tr>
+        <tr>
+            <td>Overall Glucose Trend</td>
+            <td>The general direction or pattern of blood glucose levels over a specific period, such as increasing, decreasing, or stable. It provides an overview of the overall glucose control.</td>
+        </tr>
+    </table>
+</body>
+</html>

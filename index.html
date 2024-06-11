@@ -1,0 +1,331 @@
+<?php
+  session_start();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glucose Analysis</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-image: url("https://img.freepik.com/free-photo/hand-holding-blood-glucose-meter-measuring-blood-sugar-background-is-stethoscope-chart-file_1387-931.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="background-color:#075779">
+    <a class="navbar-brand" href="#">Glucose Analysis</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.php">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"  href="info.html">Info</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"  href="logout.php">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <?php include 'user.php' ?>
+
+  <div class="container mt-5">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <form id="uploadForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="csvFile">Upload CSV File:</label>
+            <input type="file" class="form-control-file" id="csvFile" accept=".csv">
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="input" placeholder="DD-06-YYYY h:mm:ss" class="form-control" id="startDate">
+          </div>
+          <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="input" placeholder="DD-06-YYYY h:mm:ss" class="form-control" id="endDate">
+          </div>
+          <p class="label" id="data1"></p>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Upload</button>
+          </div>
+        </form>
+
+      
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-5 d-flex justify-content-center align-items-center align-content-center">
+   
+    
+        <button class="btn btn-primary" onclick="myHandler()">Numarical Metrics</button>
+        <button class="btn btn-secondary ml-2  "onclick=myHandlerTrends()>Trends</button>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom JavaScript -->
+  <script>
+
+function myHandler(){
+  event.preventDefault();
+  window.location.href ="num.html"
+}
+
+
+function myHandlerTrends(){
+  event.preventDefault();
+  window.location.href ="trends.html"
+}
+    document.getElementById("uploadForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var fileInput = document.getElementById("csvFile");
+      var startDateInput = document.getElementById("startDate");
+      var endDateInput = document.getElementById("endDate");
+
+      var file = fileInput.files[0];
+      console.log("FILE", file)
+
+      var startDate = startDateInput.value;
+
+
+      var endDate = endDateInput.value;
+      if (startDate === "" || endDate === "") {
+        var formData = new FormData();
+        formData.append("file", file);
+      } else {
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("start_date", startDate);
+        formData.append("end_date", endDate);
+      }
+
+      console.log(formData, "FD");
+      fetch("http://127.0.0.1:5000/upload", {
+        method: "POST",
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Process the response data
+          console.log(data);
+          var datanew = document.getElementById("data1");
+          datanew.innerHTML = data.msg;
+          // Redirect to the results page
+          // window.location.href = "results.html";
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    });
+
+    document.getElementById("categoryForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var metricSelect = document.getElementById("metric");
+      var selectedMetric = metricSelect.value;
+      console.log(metricSelect.value)
+      if (selectedMetric === "mean") {
+        function meanData() {
+          fetch("http://127.0.0.1:5000/mean")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.mean);
+              var resultDiv = document.getElementById("result");
+              resultDiv.textContent = "Selected metric mean: " + data.mean;
+            })
+
+        }
+        meanData()
+      } else if (selectedMetric === "sd") {
+
+
+        function sdData() {
+          fetch("http://127.0.0.1:5000/sd")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.mean);
+              var resultDiv = document.getElementById("result");
+              resultDiv.textContent = "Selected metric sd: " + data.sd;
+            })
+
+        }
+        sdData()
+
+      }
+      else if (selectedMetric === "gv") {
+
+
+        function gvData() {
+          fetch("http://127.0.0.1:5000/gv")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data.gv);
+              var resultDiv = document.getElementById("result");
+              resultDiv.textContent = "Selected metric gv: " + data.gv;
+            })
+
+        }
+        gvData()
+
+      }
+
+      else if (selectedMetric === "tir") {
+
+
+        function tirData() {
+          fetch("http://127.0.0.1:5000/tir_tar_tbr")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              var resultDiv = document.getElementById("result");
+              resultDiv.innerHTML = `TAR : ${data.tar_percentage} % <br> TBR : ${data.tbr_percentage} % <br> TIR: ${data.tir_percentage} %`;
+              // resultDiv.textContent = `TAR : ${data.tar_percentage} % \n\n TBR : ${data.tbr_percentage} % \n\n TIR: ${data.tir_percentage} %`;
+            })
+
+        }
+        tirData()
+
+      }
+      else if (selectedMetric === "modd") {
+
+
+        function moddData() {
+          fetch("http://127.0.0.1:5000/modd")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              var resultDiv = document.getElementById("result");
+              // resultDiv.innerHTML = `TAR : ${data.tar_percentage} % <br> TBR : ${data.tbr_percentage} % <br> TIR: ${data.tir_percentage} %`;
+              resultDiv.textContent = "Selected metric modd: " + data.modd;
+            })
+
+        }
+        moddData()
+
+      }
+      else if (selectedMetric === "conga") {
+
+
+        function congaData() {
+          fetch("http://127.0.0.1:5000/conga")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              var resultDiv = document.getElementById("result");
+              // resultDiv.innerHTML = `TAR : ${data.tar_percentage} % <br> TBR : ${data.tbr_percentage} % <br> TIR: ${data.tir_percentage} %`;
+              resultDiv.textContent = "Selected metric conga: " + data.conga;
+            })
+
+        }
+        congaData()
+
+      }
+      else if (selectedMetric === "mage") {
+
+
+        function mageData() {
+          fetch("http://127.0.0.1:5000/mage")
+            .then(response => response.json())
+            .then(data => {
+              console.log(data, "HIIImega");
+              var resultDiv = document.getElementById("result");
+              // resultDiv.innerHTML = `TAR : ${data.tar_percentage} % <br> TBR : ${data.tbr_percentage} % <br> TIR: ${data.tir_percentage} %`;
+              resultDiv.textContent = "Selected metric mage: " + data.mage;
+            })
+
+        }
+        mageData()
+
+      }
+
+      else if (selectedMetric === "igt") {
+
+
+        window.location.href = "igt.html";
+
+      }
+      else if(selectedMetric === "ogt"){
+        window.location.href = "ogt.html";
+      }
+      else if(selectedMetric === "sdr"){
+        window.location.href = "sdr.html";
+      }
+      else if(selectedMetric === "iqr"){
+        window.location.href = "iqr.html";
+      }
+      else if(selectedMetric === "rmv"){
+        window.location.href = "rmv.html";
+      }
+      else if(selectedMetric === "hr"){
+        window.location.href = "hr.html";
+      }
+      else if(selectedMetric === "ho"){
+        window.location.href = "ho.html";
+      }
+      else {
+        // Generate a chart for the selected metric
+        generateChart(selectedMetric);
+      }
+    });
+
+    function generateChart(metric) {
+      // Generate the chart based on the selected metric
+      var ctx = document.getElementById("chartContainer").getContext("2d");
+
+      // Example data (replace with your actual data)
+      var chartData = {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [{
+          label: metric,
+          data: [10, 20, 30, 40, 50, 60, 70],
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1
+        }]
+      };
+
+      var chartOptions = {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      };
+
+      var chart = new Chart(ctx, {
+        type: "bar",
+        data: chartData,
+        options: chartOptions
+      });
+    }
+  </script>
+
+</body>
+
+</html>

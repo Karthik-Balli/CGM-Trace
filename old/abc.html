@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Overall Glucose Trend</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="glucose-chart"></canvas>
+
+    <script>
+        // Make a GET request to the API endpoint
+        fetch('http://127.0.0.1:5000/glucose_trend')
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const labels = data.labels;
+                const glucoseValues = data.glucose_values;
+                const aggregateValues = data.aggregate_values;
+
+                // Create a chart using Chart.js
+                const ctx = document.getElementById('glucose-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Glucose Value',
+                            data: glucoseValues,
+                            borderColor: 'yellowblue',
+                            backgroundColor: 'transparent',
+                        }, {
+                            label: 'Aggregate',
+                            data: aggregateValues,
+                            borderColor: 'chartreuse',
+                            backgroundColor: 'transparent',
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Glucose Value Vs. Time'
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Glucose Value'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    </script>
+</body>
+</html>

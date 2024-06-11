@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standard Deviation of Blood Glucose Rate of Change (SDR)  Results</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Glucose Analysis</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="muted text-center text-secondary">Standard Deviation of Blood Glucose Rate of Change (SDR)</h2>
+        <div id="chartContainer">
+            <!-- Place the line chart code here -->
+        </div>
+        <div class="mt-5">
+            <h4>Calculated Data:</h4>
+            <p id="bgRocStd"></p>
+            <p id="bgRocMean"></p>
+        </div>
+        <div class="mt-5">
+            <h4>BG Rate of Change Histogram:</h4>
+            <canvas id="histogramCanvas"></canvas>
+        </div>
+    </div>
+    
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+<!-- Chart.js and Custom JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Event listener for the Generate Chart button
+    document.addEventListener("DOMContentLoaded", function () {
+        // Make a GET request to the appropriate API endpoint
+        const url = `http://127.0.0.1:5000/sdr`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Extract the data from the response
+                const bgRocStd = data.bg_roc_std;
+                const bgRocMean = data.bg_roc_mean;
+                const histogramData = data.histogram_data;
+
+                // Display the calculated data
+                const bgRocStdElement = document.getElementById('bgRocStd');
+                const bgRocMeanElement = document.getElementById('bgRocMean');
+                bgRocStdElement.textContent = `Standard Deviation: ${bgRocStd}`;
+                bgRocMeanElement.textContent = `Mean: ${bgRocMean}`;
+
+                // Create a histogram using Chart.js
+                const histogramCtx = document.getElementById('histogramCanvas').getContext('2d');
+                new Chart(histogramCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: histogramData.map((_, index) => index + 1),
+                        datasets: [{
+                            label: "BG Rate of Change",
+                            data: histogramData,
+                            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: "BG Rate of Change Histogram"
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Index'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'BG Rate of Change'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interday Glucose Trends Results</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Glucose Analysis</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="muted text-center text-secondary">Interday Glucose Trends</h2>
+        <div id="chartContainer"></div>
+        <canvas id="chartCanvas"></canvas>
+        <canvas id="chartCanvasAn"></canvas>
+        <canvas id="chartCanvasN"></canvas>
+
+
+
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Make a GET request to the API endpoint
+        fetch('http://127.0.0.1:5000/morning_trends')
+            .then(response => response.json())
+            .then(data => {
+                // Extract the chart data from the response
+                const labels = data.labels;
+                const values = data.values;
+
+                // Create a chart using Chart.js
+                const ctx = document.getElementById('chartCanvas').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Morning Trends',
+                            data: values,
+                            borderColor: 'orange',
+                            backgroundColor: 'transparent',
+                        }]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Morning Trends'
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Glucose Value'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+
+    </script>
+
+<script>
+    // Make a GET request to the API endpoint
+    fetch('http://127.0.0.1:5000/afternoon_trends')
+        .then(response => response.json())
+        .then(data => {
+            // Extract the chart data from the response
+            const labels = data.labels;
+            const values = data.values;
+
+            // Create a chart using Chart.js
+            const ctx = document.getElementById('chartCanvasAn').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Afternooon Trends',
+                        data: values,
+                        borderColor: 'yellowgreen',
+                        backgroundColor: 'transparent',
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Aafternoon Trends'
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Glucose Value'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+
+</script>
+
+<script>
+    // Make a GET request to the API endpoint
+    fetch('http://127.0.0.1:5000/night_trends')
+        .then(response => response.json())
+        .then(data => {
+            // Extract the chart data from the response
+            const labels = data.labels;
+            const values = data.values;
+
+            // Create a chart using Chart.js
+            const ctx = document.getElementById('chartCanvasN').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Night Trends',
+                        data: values,
+                        borderColor: 'blue',
+                        backgroundColor: 'transparent',
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Night Trends'
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Glucose Value'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+
+</script>
+</body>
+
+</html>
